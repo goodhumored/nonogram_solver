@@ -1,27 +1,34 @@
 import { ArgumentMetadata, PipeTransform } from "@nestjs/common";
 import { NonogramDTO } from "../../application/dtos/nonogram.dto";
-import { Line } from "../entities/line.entity";
-import { Nonogram } from "../entities/nonogram.entity";
-import { Tile } from "../entities/tile.entity";
+import { StandartLine } from "../entities/line.entity";
+import { StandartNonogram } from "../entities/nonogram.entity";
+import { StandartTile } from "../entities/tile.entity";
 import { TileStateEnum } from "../enums/tileState.enum";
-import { ILine } from "../interfaces/line.interface";
+import { Line } from "../interfaces/line.interface";
 
 export class NonogramDTOMapper implements PipeTransform {
-  transform(value: NonogramDTO, metadata: ArgumentMetadata): Nonogram {
-    const rows: ILine[] = [];
-    const cols: ILine[] = [];
+  transform(value: NonogramDTO, metadata: ArgumentMetadata): StandartNonogram {
+    const rows: Line[] = [];
+    const cols: Line[] = [];
     for (let rowN = 0; rowN < value.rows.length; rowN++) {
-      const row = new Line(value.rows[rowN].quantifiers);
+      const row = new StandartLine(value.rows[rowN].quantifiers);
       for (let colN = 0; colN < value.cols.length; colN++) {
-        const col = new Line(value.cols[colN].quantifiers);
-        const state: TileStateEnum = (value.rows[rowN].tiles[colN] ?? value.cols[colN].tiles[rowN]).state
-        const tile = new Tile(state);
-        row.addTile(tile)
-        col.addTile(tile)
-        cols.push(col)
+        let col;
+        if (cols[colN]) {
+          col = cols[colN]
+        } else {
+          col = new StandartLine(value.cols[colN].quantifiers);
+          cols.push(col);
+        }
+        let tileState;
+        if (value.rows[rowN].tiles) tileState = value.rows[rowN].tiles[colN]?.state;
+        else if (value.cols[colN].tiles) tileState = value.cols[colN].tiles[rowN]?.state;
+        const tile = new StandartTile(tileState ?? TileStateEnum.empty);
+        row.addTile(tile);
+        col.addTile(tile);
       }
       rows.push(row);
     }
-    return new Nonogram(rows, cols)
+    return new StandartNonogram(rows, cols);
   }
 }

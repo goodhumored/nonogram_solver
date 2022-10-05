@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { APP_FILTER } from '@nestjs/core';
+import { AllExceptionFilter } from './domain/filters/exception.filter';
 import { NonogramModule } from './domain/modules/nonogram.module';
 
 @Module({
@@ -12,7 +12,11 @@ import { NonogramModule } from './domain/modules/nonogram.module';
     }),
     NonogramModule
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionFilter
+    }
+  ]
 })
 export class AppModule {}

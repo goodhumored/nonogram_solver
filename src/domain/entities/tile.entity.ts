@@ -1,13 +1,12 @@
 import { TileStateEnum } from "../enums/tileState.enum";
-import { ILine } from "../interfaces/line.interface";
-import { ITile, ProbabilityType } from "../interfaces/tile.interface";
+import { Line } from "../interfaces/line.interface";
+import { Tile } from "../interfaces/tile.interface";
 
-export class Tile implements ITile {
+export class StandartTile implements Tile {
 
-  private state: TileStateEnum = TileStateEnum.unknown;
-  private row: ILine;
-  private column: ILine;
-  private probability: ProbabilityType;
+  private state: TileStateEnum = TileStateEnum.empty;
+  private row: Line;
+  private column: Line;
 
   
   constructor(state?: TileStateEnum) {
@@ -26,31 +25,23 @@ export class Tile implements ITile {
     this.state = TileStateEnum.painted;
   }
 
-  getColumn(): ILine {
+  getColumn(): Line {
     return this.column;
   }
 
-  getRow(): ILine {
+  getRow(): Line {
     return this.row;
   }
 
-  setColumn(column: ILine): void {
+  setColumn(column: Line): void {
     this.column = column;
   }
 
-  setRow(row: ILine): void {
+  setRow(row: Line): void {
     this.row = row;
   }
-  
-  getProbability(): ProbabilityType {
-    return this.probability;
-  }
 
-  setProbability(probability: ProbabilityType): void {
-    this.probability = probability;
-  }
-
-  incrementProbability(): void {
-    this.probability++;
+  clone(): StandartTile {
+    return Object.assign(Object.create(Object.getPrototypeOf(this)), this)
   }
 }

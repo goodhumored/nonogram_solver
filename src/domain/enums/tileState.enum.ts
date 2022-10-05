@@ -1,5 +1,5 @@
 export enum TileStateEnum {
-  unknown = 'unknown',
+  empty = 'empty',
   painted = 'painted',
   flagged = 'flagged'
 }

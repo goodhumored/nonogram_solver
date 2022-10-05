@@ -1,25 +1,31 @@
-import { ILine } from "../interfaces/line.interface";
-import { ITile } from "../interfaces/tile.interface";
+import { SolverNotSetException } from "../exceptions/nonogram/line/solverNotSet.exception";
+import { OffsetEnumeratingSolver } from "../strategies/nonogram_solvers/offsetEnumeratingSolver.strategy";
+import { Drawer } from "../interfaces/drawer.interface";
+import { Line } from "../interfaces/line.interface";
+import { Solver } from "../interfaces/solver.interface";
+import { Tile } from "../interfaces/tile.interface";
+import { TileStateEnum } from "../enums/tileState.enum";
 
-export class Line implements ILine {
-  private tiles: ITile[];
+export class StandartLine implements Line {
+  private tiles: Tile[];
   private quantifiers: number[];
   private closed: boolean;
+  private solver: Solver = new OffsetEnumeratingSolver();
 
-  constructor(quantifiers: number[], tiles?: ITile[]) {
+  constructor(quantifiers: number[], tiles: Tile[] = []) {
     this.quantifiers = quantifiers
     this.tiles = tiles
   }
 
-  getTiles(): ITile[] {
+  getTiles(): Tile[] {
     return this.tiles;
   }
 
-  getTile(n: number): ITile {
+  getTile(n: number): Tile {
     return this.tiles[n];
   }
 
-  addTile(tile: ITile): void {
+  addTile(tile: Tile): void {
     this.tiles.push(tile);
   }
 
@@ -27,22 +33,44 @@ export class Line implements ILine {
     return this.closed
   }
 
+  getQuantifiers(): number[] {
+    return this.quantifiers;
+  }
+
   close(): void {
     this.closed = true;
   }
 
-  modifyProbabilities(): void {
-    for (let quantifiersN = 0; quantifiersN < .length; quantifiersN++) {
-      const element = [quantifiersN];
-      
+  solve(): void {
+    if (!this.solver) throw new SolverNotSetException();
+    if (this.isClosed()) return;
+    this.solver.solve(this);
+    if (this.tiles.findIndex(tile => tile.getState() == TileStateEnum.empty) == -1)
+      this.close()
+  }
+
+  setSolver(solver: Solver): void {
+    this.solver = solver;
+  }
+
+  draw(drawer: Drawer): void {
+    for (let i = 0; i < this.getTiles().length; i++) {
+      drawer.drawTile(this.getTile(i).clone())
     }
   }
-  
-  paintProbabilities(): void {
-    const tiles = this.getTiles();
-    for (let tileN = 0; tileN < tiles.length; tileN++) {
-      if (tiles[tileN].getProbability() == tiles.length)
-        tiles[tileN].paint()
+
+  clone(): StandartLine {
+    const tiles: Tile[] = [];
+    for (let i = 0; i < this.getTiles().length; i++) {
+      tiles.push(this.getTile(i).clone())
+    }
+    return new StandartLine(this.quantifiers, tiles);
+  }
+
+  toJSON() {
+    return {
+      tiles: this.tiles,
+      quantifiers: this.quantifiers
     }
   }
 }

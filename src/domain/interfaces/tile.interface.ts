@@ -1,15 +1,11 @@
 import { TileStateEnum } from "../enums/tileState.enum";
-import { ILine } from "./line.interface";
+import { Clonable } from "./common/clonable.interface";
+import { Line } from "./line.interface";
 
-export type ProbabilityType = number;
-
-export interface ITile {
+export interface Tile extends Clonable<Tile> {
   getState(): TileStateEnum;
   flag(): void;
   paint(): void;
-  getColumn(): ILine;
-  getRow(): ILine;
-  getProbability(): ProbabilityType;
-  setProbability(probability: ProbabilityType): void;
-  incrementProbability(): void;
+  getColumn(): Line;
+  getRow(): Line;
 }
