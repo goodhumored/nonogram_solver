@@ -10,12 +10,11 @@ export class NonogramService {
   constructor() { }
 
   solveSteps<T extends Nonogram>(nonogram: T, steps: number = 0): T {
-    if (steps == 0) steps = 1000
+    if (steps == 0) steps = 100
     while (!nonogram.isSolved()) {
       if (steps == 0) break;
       steps--;
       nonogram.solve();
-      nonogram.draw(new ConsoleDrawer());
     }
     return nonogram;
   }

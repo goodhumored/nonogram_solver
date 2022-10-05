@@ -14,9 +14,12 @@ export class OffsetEnumeratingSolver implements Solver {
     this.variationsCount = 0;
     this.originalLine = line;
     this.quantifiers = this.originalLine.getQuantifiers();
+
     this.max_offset = this.originalLine.getTiles().length - this.quantifiers.reduce((a, b) => a + b, 0) - this.quantifiers.length + 1;
+    const max_quant = this.quantifiers.reduce((a, b) => Math.max(a, b), 0);
+    if (max_quant < this.max_offset && line.getTiles().every(t => t.getState() == TileStateEnum.empty)) return line;
     this.tileCounters = new Array(this.originalLine.getTiles().length).fill(0);
-    const offsets = new Array(this.quantifiers.length).fill(0)
+    const offsets = new Array(this.quantifiers.length).fill(0);
     this.proccessOffsets(offsets);
     this.enumerateOffsets(offsets, this.quantifiers.length - 1);
 

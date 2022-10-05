@@ -42,6 +42,6 @@ export class StandartTile implements Tile {
   }
 
   clone(): StandartTile {
-    return Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+    return new StandartTile(this.state)
   }
 }

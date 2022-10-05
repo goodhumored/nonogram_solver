@@ -332,10 +332,15 @@ paket-files/
 
 # IDE - VSCode
 .vscode/*
+vscode-profile-*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# templates
+template.config.js
+.templates
 
 # CodeRush
 .cr/

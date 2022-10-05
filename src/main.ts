@@ -6,7 +6,7 @@ import { AppModule } from './app.module';
 const logger = new Logger("AppBootstrap", { timestamp: true });
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { logger: logger, cors: true });
   app.useLogger(logger);
 
   const configService = app.get<ConfigService>(ConfigService);
@@ -14,7 +14,7 @@ async function bootstrap() {
 
   await app.listen(port);
   await app.init();
-  logger.log(`Application listens on http://localhost:${port}/`)
+  logger.log(`Application listens on http://localhost:${port}/`);
 
   logger.log(`Application successfully started`);
 }

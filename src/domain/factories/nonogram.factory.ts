@@ -16,7 +16,7 @@ export class NonogramFactory {
       const line_quantifiers = [];
       let q = 0;
       for (let x = 0; x < width; x++) {
-        if (this.isBlack(buffer[y * height + x])) {
+        if (this.isBlack(buffer[y * width + x])) {
           q++;
           line[x]++;
         } else {
